@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Verifica se houve alterações no arquivo composer.json
+if [[ $(git diff-tree -r --name-only $1 HEAD -- composer.json) ]]; then
+    echo "Houve alteração no arquivo composer.json. Executando 'composer install'"
+    # Executa o comando composer install
+    composer install
+fi
