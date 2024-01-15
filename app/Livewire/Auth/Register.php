@@ -3,6 +3,8 @@
 namespace App\Livewire\Auth;
 
 use App\Models\User;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 
@@ -28,11 +30,15 @@ class Register extends Component
     {
         $this->validate();
 
-        User::query()->create([
+        $user = User::query()->create([
             'name'     => $this->name,
             'email'    => $this->email,
             'password' => $this->password,
         ]);
+
+        Auth::login($user);
+
+        $this->redirect(RouteServiceProvider::HOME);
     }
 
     public function updated($prop, $value)
