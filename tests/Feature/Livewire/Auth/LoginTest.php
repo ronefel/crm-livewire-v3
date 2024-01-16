@@ -34,3 +34,22 @@ it('deve mostrar erro no login', function () {
         ->assertHasErrors(['invalidCredentials'])
         ->assertSee(trans('auth.failed'));
 });
+
+it('deve bloquear o login após 5 tentativas', function () {
+    $user = User::factory()->create();
+
+    for($i = 0; $i < 5; $i++) {
+        Livewire::test(Login::class)
+            ->set('email', $user->email)
+            ->set('password', 'password-errado')
+            ->call('tryToLogin')
+            ->assertHasErrors(['invalidCredentials'])
+            ->assertSee(trans('auth.failed'));
+    }
+
+    Livewire::test(Login::class)
+        ->set('email', $user->email)
+        ->set('password', 'password-errado')
+        ->call('tryToLogin')
+        ->assertHasErrors(['rateLimiter']);
+});
