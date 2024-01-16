@@ -16,7 +16,8 @@ class Recovery extends Component
 
     public function render()
     {
-        return view('livewire.auth.password.recovery');
+        return view('livewire.auth.password.recovery')
+            ->layout('components.layouts.guest');
     }
 
     public function startPasswordRecovery()
