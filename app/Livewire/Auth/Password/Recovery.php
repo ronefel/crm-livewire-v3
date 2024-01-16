@@ -4,12 +4,14 @@ namespace App\Livewire\Auth\Password;
 
 use App\Models\User;
 use App\Notifications\PasswordRecoveryNotification;
+use Livewire\Attributes\Rule;
 use Livewire\Component;
 
 class Recovery extends Component
 {
     public ?string $message = null;
 
+    #[Rule(['required', 'email'])]
     public ?string $email = null;
 
     public function render()
@@ -19,6 +21,8 @@ class Recovery extends Component
 
     public function startPasswordRecovery()
     {
+        $this->validate();
+
         $user = User::whereEmail($this->email)->first();
 
         $user?->notify(new PasswordRecoveryNotification());

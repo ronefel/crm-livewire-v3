@@ -24,3 +24,13 @@ it('deve solicitar a recuperação de senha e notificar o usuário', function ()
 
     Notification::assertSentTo($user, PasswordRecoveryNotification::class);
 });
+
+it('deve validar o campo email', function ($value, $rule) {
+    Livewire::test(Recovery::class)
+        ->set('email', $value)
+        ->call('startPasswordRecovery')
+        ->assertHasErrors(['email' => $rule]);
+})->with([
+    'required' => ['value' => '', 'rule' => 'required'],
+    'email'    => ['value' => 'email errado', 'rule' => 'email'],
+]);
