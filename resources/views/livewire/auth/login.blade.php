@@ -17,6 +17,6 @@
         </x-form>
     </x-card>
     <div class="w-full flex justify-center mt-4 text-sm">
-        <a href="{{route('auth.password.recovery')}}" class="link">Forgot your password?</a>
+        <a href="{{route('password.recovery')}}" class="link">Forgot your password?</a>
     </div>
 </div>

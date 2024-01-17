@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Notification;
 use function Pest\Laravel\{assertDatabaseCount, assertDatabaseHas, get};
 
 it('deve ter uma rota de recuperar a senha', function () {
-    get(route('auth.password.recovery'))
-        // ->assertSeeLivewire('auth.password.recovery')
+    get(route('password.recovery'))
+        // ->assertSeeLivewire('password.recovery')
         ->assertOk();
 });
 
