@@ -95,3 +95,31 @@ it('deve validar os campos', function ($field, $value, $rule) {
     'password:required'  => ['field' => 'password', 'value' => '', 'rule' => 'required'],
     'password:confirmed' => ['field' => 'password', 'value' => 'any-password', 'rule' => 'confirmed'],
 ]);
+
+test('deve mostrar o email ofuscado para o usuário', function () {
+    $email = 'jeremias@example.com';
+
+    $obfuscatedEmail = ofuscar_email($email);
+
+    expect($obfuscatedEmail)
+        ->toBe('je******@********com');
+
+    Notification::fake();
+
+    $user = User::factory()->create();
+
+    Livewire::test(Recovery::class)
+        ->set('email', $user->email)
+        ->call('startPasswordRecovery');
+
+    Notification::assertSentTo(
+        $user,
+        ResetPassword::class,
+        function (ResetPassword $notification) use ($user) {
+            Livewire::test(Reset::class, ['token' => $notification->token, 'email' => $user->email])
+                ->assertSet('obfuscatedEmail', ofuscar_email($user->email));
+
+            return true;
+        }
+    );
+});

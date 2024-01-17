@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\{DB, Hash, Password};
 use Illuminate\Support\Str;
-use Livewire\Attributes\{Layout, Rule};
+use Livewire\Attributes\{Computed, Layout, Rule};
 use Livewire\Component;
 
 class Reset extends Component
@@ -57,6 +57,12 @@ class Reset extends Component
         session()->flash('status', __($status));
 
         $this->redirect(route('login'));
+    }
+
+    #[Computed]
+    public function obfuscatedEmail()
+    {
+        return ofuscar_email($this->email);
     }
 
     private function tokenNotValid()
