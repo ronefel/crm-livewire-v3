@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Can;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -15,7 +16,7 @@ class UsersSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
 
         User::factory()
-            ->withPermission('be an admin')
+            ->withPermission(Can::BE_AN_ADMIN)
             ->create([
                 'name'  => 'Admin',
                 'email' => 'admin@admin.com',
