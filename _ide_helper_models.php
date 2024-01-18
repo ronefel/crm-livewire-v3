@@ -11,6 +11,29 @@
 
 namespace App\Models{
     /**
+     * App\Models\Permission
+     *
+     * @property int $id
+     * @property string $key
+     * @property \Illuminate\Support\Carbon|null $created_at
+     * @property \Illuminate\Support\Carbon|null $updated_at
+     * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
+     * @property-read int|null $users_count
+     * @method static \Illuminate\Database\Eloquent\Builder|Permission newModelQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder|Permission newQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder|Permission query()
+     * @method static \Illuminate\Database\Eloquent\Builder|Permission whereCreatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Permission whereId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Permission whereKey($value)
+     * @method static \Illuminate\Database\Eloquent\Builder|Permission whereUpdatedAt($value)
+     */
+    class Permission extends \Eloquent
+    {
+    }
+}
+
+namespace App\Models{
+    /**
      * App\Models\User
      *
      * @property int $id
@@ -23,6 +46,8 @@ namespace App\Models{
      * @property \Illuminate\Support\Carbon|null $updated_at
      * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
      * @property-read int|null $notifications_count
+     * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Permission> $permissions
+     * @property-read int|null $permissions_count
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
      * @property-read int|null $tokens_count
      * @method static \Database\Factories\UserFactory factory($count = null, $state = [])

@@ -6,8 +6,10 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\Authenticatable as AuthAuthenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements AuthAuthenticatable
@@ -46,4 +48,31 @@ class User extends Authenticatable implements AuthAuthenticatable
         'email_verified_at' => 'datetime',
         'password'          => 'hashed',
     ];
+
+    public function permissions(): BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class);
+    }
+
+    public function givePermissionTo(string $key)
+    {
+        $this->permissions()->firstOrCreate(compact('key'));
+
+        Cache::forget($this->getPermissionCacheKey());
+
+        Cache::rememberForever($this->getPermissionCacheKey(), fn () => $this->permissions);
+    }
+
+    public function hasPermissionTo(string $key)
+    {
+        /** @var \Illuminate\Database\Eloquent\Collection<\App\Models\Permission> */
+        $permissions = Cache::get($this->getPermissionCacheKey(), $this->permissions);
+
+        return $permissions->where('key', '=', $key)->isNotEmpty();
+    }
+
+    private function getPermissionCacheKey()
+    {
+        return "user::{$this->id}::permissions";
+    }
 }

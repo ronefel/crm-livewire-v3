@@ -1,6 +1,6 @@
 <?php
 
-function ofuscar_email(string $email)
+function ofuscar_email(?string $email = null)
 {
     if (!$email) {
         return '';

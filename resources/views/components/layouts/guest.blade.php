@@ -10,6 +10,8 @@
 </head>
 
 <body class="min-h-screen font-sans antialiased bg-base-200/50 dark:bg-base-200">
+
+    <x-theme-toggle />
     {{-- MAIN --}}
     <x-main full-width>
         {{-- The `$slot` goes here --}}

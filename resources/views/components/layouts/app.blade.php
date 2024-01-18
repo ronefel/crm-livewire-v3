@@ -33,6 +33,7 @@
             <div class="p-6 pt-3 flex gap-3 items-center h-20">
                 <x-icon name="o-square-3-stack-3d" class="text-primary" />
                 <div class="hidden-when-collapsed">App</div>
+                <x-theme-toggle />
             </div>
 
             {{-- MENU --}}
