@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Active page highlight */
+.mary-table-pagination span[aria-current="page"] > span {
+    @apply bg-primary text-base-100  border-primary
+}
+
+/* For dark mode*/
+.mary-table-pagination span[aria-disabled="true"] span {
+    @apply bg-inherit border-primary
+}
+
+/* For dark mode*/
+.mary-table-pagination button {
+    @apply bg-base-100 text-base-content border-primary
+}

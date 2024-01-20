@@ -22,5 +22,6 @@ class UsersSeeder extends Seeder
             ]);
 
         \App\Models\User::factory(50)->create();
+        \App\Models\User::factory(5)->create(['deleted_at' => now()]);
     }
 }

@@ -25,6 +25,10 @@ class Index extends Component
 
     public Collection $permissionsToSearch;
 
+    public array $sortBy = ['column' => 'name', 'direction' => 'asc'];
+
+    public int $perPage = 10;
+
     public function mount()
     {
         $this->authorize(Can::BE_AN_ADMIN->value);
@@ -42,9 +46,12 @@ class Index extends Component
         $this->validate(['search_permissions' => 'exists:permissions,id']);
 
         $query = User::query()
+
             ->when($this->search, function ($query) {
                 $searchTerm = '%' . strtolower($this->search) . '%';
-                $query->whereRaw('lower(name) like ? or lower(email) like ?', [$searchTerm, $searchTerm]);
+                $query->where(function ($subQuery) use ($searchTerm) {
+                    $subQuery->whereRaw('lower(name) like ? or lower(email) like ?', [$searchTerm, $searchTerm]);
+                });
             })
             ->when($this->search_permissions, function ($query, $permissionIds) {
                 $query->whereHas('permissions', function ($subQuery) use ($permissionIds) {
@@ -53,21 +60,22 @@ class Index extends Component
             })
             ->when($this->search_trash, function ($query) {
                 $query->onlyTrashed();
-            });
+            })
+            ->orderBy(...array_values($this->sortBy));
 
         Log::info('SQL: ' . $query->toSql());
 
-        return $query->paginate();
+        return $query->paginate($this->perPage);
     }
 
     #[Computed]
     public function headers()
     {
         return [
-            ['key' => 'id', 'label' => '#', 'sortColumnBy' => 'id', 'sortDirection' => 'asc'],
-            ['key' => 'name', 'label' => 'Name', 'sortColumnBy' => 'id', 'sortDirection' => 'asc'],
-            ['key' => 'email', 'label' => 'Email', 'sortColumnBy' => 'id', 'sortDirection' => 'asc'],
-            ['key' => 'permissions.key', 'label' => 'Permissions', 'sortColumnBy' => 'id', 'sortDirection' => 'asc'],
+            ['key' => 'id', 'label' => '#', ],
+            ['key' => 'name', 'label' => 'Name', ],
+            ['key' => 'email', 'label' => 'Email', ],
+            ['key' => 'permissions.key', 'label' => 'Permissions', 'sortable' => false],
         ];
     }
 
@@ -82,5 +90,15 @@ class Index extends Component
     private function getPermissions()
     {
         $this->permissionsToSearch = Permission::query()->orderBy('key')->get();
+    }
+
+    public function delete(string $id)
+    {
+        User::find($id)->delete();
+    }
+
+    public function restore(string $id)
+    {
+        User::withTrashed()->find($id)->restore();
     }
 }

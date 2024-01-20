@@ -23,12 +23,12 @@ test('making sure that the route is protected by the permission BE_AN_ADMIN', fu
 
 test("let's create a livewire component to list all users in the page", function () {
     actingAs(User::factory()->admin()->create());
-    $users = User::factory()->count(10)->create();
+    $users = User::factory()->count(9)->create();
 
     $lw = Livewire::test(Admin\Users\Index::class);
     $lw->assertSet('users', function ($users) {
         expect($users)
-            ->toHaveCount(11);
+            ->toHaveCount(10);
 
         return true;
     });
@@ -43,10 +43,10 @@ test('check the table format', function () {
 
     Livewire::test(Admin\Users\Index::class)
         ->assertSet('headers', [
-            ['key' => 'id', 'label' => '#', 'sortColumnBy' => 'id', 'sortDirection' => 'asc'],
-            ['key' => 'name', 'label' => 'Name', 'sortColumnBy' => 'id', 'sortDirection' => 'asc'],
-            ['key' => 'email', 'label' => 'Email', 'sortColumnBy' => 'id', 'sortDirection' => 'asc'],
-            ['key' => 'permissions.key', 'label' => 'Permissions', 'sortColumnBy' => 'id', 'sortDirection' => 'asc'],
+            ['key' => 'id', 'label' => '#', ],
+            ['key' => 'name', 'label' => 'Name', ],
+            ['key' => 'email', 'label' => 'Email', ],
+            ['key' => 'permissions.key', 'label' => 'Permissions', 'sortable' => false],
         ]);
 });
 
@@ -122,50 +122,48 @@ it('should be able to list deleted users', function () {
         });
 });
 
-// it('should be able to sort by name', function () {
-//     $admin    = User::factory()->admin()->create(['name' => 'Joe Doe', 'email' => 'admin@gmail.com']);
-//     $nonAdmin = User::factory()->withPermission(Can::TESTING)->create(['name' => 'Mario', 'email' => 'little_guy@gmail.com']);
+it('should be able to sort by name', function () {
+    $admin    = User::factory()->admin()->create(['name' => 'Joe Doe', 'email' => 'admin@gmail.com']);
+    $nonAdmin = User::factory()->withPermission(Can::TESTING)->create(['name' => 'Mario', 'email' => 'little_guy@gmail.com']);
 
-//     actingAs($admin);
-//     Livewire::test(Admin\Users\Index::class)
-//         ->set('sortDirection', 'asc')
-//         ->set('sortColumnBy', 'name')
-//         ->assertSet('users', function ($users) {
-//             expect($users)
-//                 ->first()->name->toBe('Joe Doe')
-//                 ->and($users)->last()->name->toBe('Mario');
+    actingAs($admin);
+    Livewire::test(Admin\Users\Index::class)
+        ->set('sortBy', ['column' => 'name', 'direction' => 'asc'])
+        ->assertSet('users', function ($users) {
+            expect($users)
+                ->first()->name->toBe('Joe Doe')
+                ->and($users)->last()->name->toBe('Mario');
 
-//             return true;
-//         })
-//         ->set('sortDirection', 'desc')
-//         ->set('sortColumnBy', 'name')
-//         ->assertSet('users', function ($users) {
-//             expect($users)
-//                 ->first()->name->toBe('Mario')
-//                 ->and($users)->last()->name->toBe('Joe Doe');
+            return true;
+        })
+        ->set('sortBy', ['column' => 'name', 'direction' => 'desc'])
+        ->assertSet('users', function ($users) {
+            expect($users)
+                ->first()->name->toBe('Mario')
+                ->and($users)->last()->name->toBe('Joe Doe');
 
-//             return true;
-//         });
-// });
+            return true;
+        });
+});
 
-// it('should be able to paginate the result', function () {
-//     $admin = User::factory()->admin()->create(['name' => 'Joe Doe', 'email' => 'admin@gmail.com']);
-//     User::factory()->withPermission(Can::TESTING)->count(30)->create();
+it('should be able to paginate the result', function () {
+    $admin = User::factory()->admin()->create(['name' => 'Joe Doe', 'email' => 'admin@gmail.com']);
+    User::factory()->withPermission(Can::TESTING)->count(30)->create();
 
-//     actingAs($admin);
-//     Livewire::test(Admin\Users\Index::class)
-//         ->assertSet('users', function (LengthAwarePaginator $users) {
-//             expect($users)
-//                 ->toHaveCount(15);
+    actingAs($admin);
+    Livewire::test(Admin\Users\Index::class)
+        ->assertSet('users', function (LengthAwarePaginator $users) {
+            expect($users)
+                ->toHaveCount(10);
 
-//             return true;
-//         })
-//         ->set('perPage', 20)
-//         ->assertSet('users', function (LengthAwarePaginator $users) {
-//             expect($users)
-//                 ->toHaveCount(20);
+            return true;
+        })
+        ->set('perPage', 20)
+        ->assertSet('users', function (LengthAwarePaginator $users) {
+            expect($users)
+                ->toHaveCount(20);
 
-//             return true;
-//         });
-//     ;
-// });
+            return true;
+        });
+    ;
+});
