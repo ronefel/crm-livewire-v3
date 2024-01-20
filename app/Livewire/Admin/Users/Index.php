@@ -21,6 +21,8 @@ class Index extends Component
 
     public array $search_permissions = [];
 
+    public bool $search_trash = false;
+
     public Collection $permissionsToSearch;
 
     public function mount()
@@ -48,6 +50,9 @@ class Index extends Component
                 $query->whereHas('permissions', function ($subQuery) use ($permissionIds) {
                     $subQuery->whereIn('id', $permissionIds);
                 });
+            })
+            ->when($this->search_trash, function ($query) {
+                $query->onlyTrashed();
             });
 
         Log::info('SQL: ' . $query->toSql());
