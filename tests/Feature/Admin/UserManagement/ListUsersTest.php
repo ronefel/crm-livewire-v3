@@ -80,6 +80,7 @@ it('should be able to filter by name and email', function () {
 });
 
 it('should be able to filter by permission.key', function () {
+    User::factory(2)->create();
     $admin       = User::factory()->admin()->create(['name' => 'Joe Doe', 'email' => 'admin@gmail.com']);
     $nonAdmin    = User::factory()->withPermission(Can::TESTING)->create(['name' => 'Mario', 'email' => 'little_guy@gmail.com']);
     $permission  = Permission::where('key', '=', Can::BE_AN_ADMIN->value)->first();
@@ -88,7 +89,7 @@ it('should be able to filter by permission.key', function () {
     actingAs($admin);
     Livewire::test(Admin\Users\Index::class)
         ->assertSet('users', function ($users) {
-            expect($users)->toHaveCount(2);
+            expect($users)->toHaveCount(4);
 
             return true;
         })
