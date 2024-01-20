@@ -5,12 +5,13 @@ export default {
     "./resources/**/**/*.js",
     "./app/View/Components/**/**/*.php",
     "./app/Livewire/**/**/*.php",
-    "./vendor/robsontenorio/mary/src/View/Components/**/*.php"
+    "./vendor/robsontenorio/mary/src/View/Components/**/*.php",
+    './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
   ],
   theme: {
     extend: {},
   },
   plugins: [require("daisyui")],
-  darkMode: 'class', 
+  darkMode: 'class',
 }
 

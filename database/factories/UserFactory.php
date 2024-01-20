@@ -48,4 +48,9 @@ class UserFactory extends Factory
     {
         return $this->afterCreating(fn (User $user) => $user->givePermissionTo($key));
     }
+
+    public function admin(): static
+    {
+        return $this->withPermission(Can::BE_AN_ADMIN);
+    }
 }
