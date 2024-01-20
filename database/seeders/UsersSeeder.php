@@ -13,7 +13,6 @@ class UsersSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
 
         User::factory()
             ->withPermission(Can::BE_AN_ADMIN)
@@ -21,5 +20,7 @@ class UsersSeeder extends Seeder
                 'name'  => 'Admin',
                 'email' => 'admin@admin.com',
             ]);
+
+        \App\Models\User::factory(50)->create();
     }
 }
