@@ -73,7 +73,7 @@ class User extends Authenticatable implements AuthAuthenticatable
         $pKey = $key instanceof Can ? $key->value : $key;
 
         /** @var \Illuminate\Database\Eloquent\Collection<\App\Models\Permission> */
-        $permissions = Cache::get($this->getPermissionCacheKey(), $this->permissions);
+        $permissions = Cache::get($this->getPermissionCacheKey(), fn () => $this->permissions);
 
         return $permissions->where('key', '=', $pKey)->isNotEmpty();
     }
