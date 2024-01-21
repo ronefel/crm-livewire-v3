@@ -40,12 +40,26 @@ class Index extends Component
         return view('livewire.admin.users.index');
     }
 
+    public function updated($prop)
+    {
+        if (is_string($prop)) {
+            if(count(array_intersect(
+                explode('.', $prop),
+                ['search', 'search_permissions', 'perPage']
+            ))
+            ) {
+                $this->resetPage();
+            }
+
+        }
+    }
+
     #[Computed]
     public function users()
     {
         $this->validate(['search_permissions' => 'exists:permissions,id']);
 
-        $query = User::query()
+        $query = User::query()->with('permissions')
 
             ->when($this->search, function ($query) {
                 $searchTerm = '%' . strtolower($this->search) . '%';
@@ -63,7 +77,7 @@ class Index extends Component
             })
             ->orderBy(...array_values($this->sortBy));
 
-        Log::info('SQL: ' . $query->toSql());
+        // Log::info('SQL: ' . $query->toSql());
 
         return $query->paginate($this->perPage);
     }
