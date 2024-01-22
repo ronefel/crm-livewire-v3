@@ -3,12 +3,15 @@
 namespace App\Livewire\Admin\Users;
 
 use App\Models\User;
+use App\Notifications\UserDeletedNotification;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 
 class Delete extends Component
 {
     public User $user;
+
+    public bool $modal = false;
 
     #[Rule(['required', 'confirmed'])]
     public string $confirmation = 'DELETAR';
@@ -25,6 +28,7 @@ class Delete extends Component
         $this->validate();
 
         $this->user->delete();
+        $this->user->notify(new UserDeletedNotification());
 
         $this->dispatch('user::deleted');
     }
